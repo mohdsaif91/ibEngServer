@@ -17,6 +17,16 @@ const authSchema = mongoose.Schema({
     type: Date,
     default: new Date(),
   },
+  mobileNumber: {
+    type: String,
+    required: true,
+    default: "9876543211",
+  },
+  email: {
+    type: String,
+    required: true,
+    default: "abc@gmail.com",
+  },
 });
 
 const authModal = mongoose.model("loginAuth", authSchema);
