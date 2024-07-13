@@ -17,6 +17,10 @@ const eventModal = mongoose.Schema({
     type: String,
     required: true,
   },
+  speakerName: {
+    type: String,
+    required: true,
+  },
 });
 
 const EventModal = mongoose.model("event", eventModal);

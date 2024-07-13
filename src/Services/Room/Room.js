@@ -42,7 +42,7 @@ const addRoom = async (req, res) => {
 
 const getRoom = async (req, res) => {
   try {
-    const roomData = await RoomModal.aggregate([
+    await RoomModal.aggregate([
       {
         $lookup: {
           from: "actualrooms",
@@ -51,12 +51,13 @@ const getRoom = async (req, res) => {
           as: "rooms",
         },
       },
-    ]);
-
-    if (!roomData) {
-      throw "getting room data failed";
-    }
-    res.status(200).send(roomData);
+    ])
+      .then((getRoomRes) => {
+        res.status(200).send(getRoomRes);
+      })
+      .catch((error) => {
+        throw error;
+      });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
@@ -141,15 +142,24 @@ const deleteRoom = async (req, res) => {
     if (!req.params.deleteId) {
       throw "Id is required for updating";
     }
-    const deletedRoom = await RoomModal.findOneAndDelete({
+    await RoomModal.findOneAndDelete({
       _id: req.params.deleteId,
-    });
-    if (!deletedRoom) {
-      throw "Delete operation failed";
-    }
-    res.status(200).send("Room Deleted successfully");
+    })
+      .then(async (deleteRes) => {
+        await ActualRoomsModal.deleteMany({
+          bhavanId: req.params.deleteId,
+        })
+          .then((deleteActualRoomRes) => {
+            res.status(200).send(req.params.deleteId);
+          })
+          .catch((error) => {
+            throw error;
+          });
+      })
+      .catch((error) => {
+        throw "Delete operation failed";
+      });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
   res.end();

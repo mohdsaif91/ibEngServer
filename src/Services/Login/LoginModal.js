@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const authSchema = mongoose.Schema({
-  userName: {
-    require: true,
-    type: String,
-  },
   password: {
     require: true,
     type: String,
@@ -26,6 +22,10 @@ const authSchema = mongoose.Schema({
     type: String,
     required: true,
     default: "abc@gmail.com",
+  },
+  fullName: {
+    type: String,
+    required: true,
   },
 });
 
